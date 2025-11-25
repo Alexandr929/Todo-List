@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { TodoList } from './components/TodoList';
 import { TodoForm } from './components/TodoForm';
+import styles from './App.module.scss';
 
 interface Task {
   id: number;
@@ -29,7 +30,7 @@ const App = () => {
   };
 
   return (
-    <div>
+    <div className={styles.app}>
       <TodoForm onAddTask={addTask} />
       <TodoList tasks={tasks} onToggleTask={toggleTask} onDeleteTask={deleteTask} />
     </div>

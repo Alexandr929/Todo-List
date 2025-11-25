@@ -1,3 +1,5 @@
+import styles from './TodoItem.module.scss';
+
 interface TodoItemProps {
   task: {
     id: number;
@@ -10,10 +12,17 @@ interface TodoItemProps {
 
 export const TodoItem = ({ task, onToggle, onDelete }: TodoItemProps) => {
   return (
-    <div>
-      <input type="checkbox" checked={task.completed} onChange={() => onToggle(task.id)} />
+    <div className={styles.taskItem}>
+      <input
+        type="checkbox"
+        checked={task.completed}
+        onChange={() => onToggle(task.id)}
+        className={styles.checkbox}
+      />
       <span>{task.text}</span>
-      <button onClick={() => onDelete(task.id)}>Delete</button>
+      <button onClick={() => onDelete(task.id)} className={styles.deleteButton}>
+        Удалить
+      </button>
     </div>
   );
 };

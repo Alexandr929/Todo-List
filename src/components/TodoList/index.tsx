@@ -1,4 +1,5 @@
 import { TodoItem } from '../TodoItem';
+import styles from './TodoList.module.scss';
 
 interface TodoListProps {
   tasks: {
@@ -12,10 +13,10 @@ interface TodoListProps {
 
 export const TodoList = ({ tasks, onToggleTask, onDeleteTask }: TodoListProps) => {
   return (
-    <div>
-      Мои задачи: {tasks.length}
+    <div className={styles.tasksArray}>
+      <span className={styles.myTasks}>Мои задачи: {tasks.length}</span>
       {tasks.length === 0 ? (
-        <span>Задач пока нет, добавьте первую!</span>
+        <span className={styles.lackTasks}>Задач пока нет, добавьте первую!</span>
       ) : (
         tasks.map(task => (
           <TodoItem key={task.id} task={task} onToggle={onToggleTask} onDelete={onDeleteTask} />
