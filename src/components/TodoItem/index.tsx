@@ -1,4 +1,4 @@
-import styles from './TodoItem.module.scss';
+import { Button, Checkbox, HStack } from '@chakra-ui/react';
 
 interface TodoItemProps {
   task: {
@@ -12,17 +12,37 @@ interface TodoItemProps {
 
 export const TodoItem = ({ task, onToggle, onDelete }: TodoItemProps) => {
   return (
-    <div className={styles.taskItem}>
-      <input
-        type="checkbox"
+    <HStack
+      border="1px solid grey"
+      borderRadius="md"
+      bg={task.completed ? 'green.300' : '#DBE2EF'}
+      gap={3}
+      p={2}
+      w="100%"
+      justify="space-between"
+      shadow="basic-shadow"
+    >
+      <Checkbox.Root
         checked={task.completed}
-        onChange={() => onToggle(task.id)}
-        className={styles.checkbox}
-      />
-      <span>{task.text}</span>
-      <button onClick={() => onDelete(task.id)} className={styles.deleteButton}>
+        onCheckedChange={() => onToggle(task.id)}
+        variant={'solid'}
+        colorPalette={'blue'}
+        size={'lg'}
+      >
+        <Checkbox.HiddenInput />
+        <Checkbox.Control border="1px solid green" borderRadius={15} cursor="pointer" />
+        <Checkbox.Label fontWeight={600}>{task.text}</Checkbox.Label>
+      </Checkbox.Root>
+      <Button
+        onClick={() => onDelete(task.id)}
+        cursor="pointer"
+        size="xs"
+        variant="outline"
+        colorPalette={'red'}
+        _active={{ transform: 'scale (0.97)', borderColor: '#FFF' }}
+      >
         Удалить
-      </button>
-    </div>
+      </Button>
+    </HStack>
   );
 };

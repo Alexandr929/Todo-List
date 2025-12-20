@@ -1,7 +1,10 @@
-import { useState } from 'react';
-import { TodoList } from './components/TodoList';
+import { HStack, VStack } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import { useDebounce } from 'use-debounce';
+
 import { TodoForm } from './components/TodoForm';
-import styles from './App.module.scss';
+import { TodoList } from './components/TodoList';
+import { TodoSearch } from './components/TodoSearch';
 
 interface Task {
   id: number;
@@ -10,7 +13,18 @@ interface Task {
 }
 
 const App = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const saved = localStorage.getItem('tasks');
+
+    return saved ? (JSON.parse(saved) as Task[]) : [];
+  });
+  const [search, setSearch] = useState<string>('');
+
+  const [debouncedSearch] = useDebounce(search, 1500);
+
+  const filteredTasks = tasks.filter(task => {
+    return task.text.toLowerCase().includes(debouncedSearch);
+  }); // zm
 
   const addTask = (text: string) => {
     const newTask: Task = {
@@ -18,22 +32,31 @@ const App = () => {
       text: text,
       completed: false,
     };
-    setTasks([...tasks, newTask]);
+    setTasks(prev => [...prev, newTask]); // zm
   };
 
   const toggleTask = (id: number) => {
-    setTasks(tasks.map(task => (task.id === id ? { ...task, completed: !task.completed } : task)));
+    setTasks(prev =>
+      prev.map(task => (task.id === id ? { ...task, completed: !task.completed } : task))
+    ); // zm
   };
 
   const deleteTask = (id: number) => {
-    setTasks(tasks.filter(task => task.id !== id));
+    setTasks(prev => prev.filter(task => task.id !== id));
   };
 
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }, [tasks]);
+
   return (
-    <div className={styles.app}>
-      <TodoForm onAddTask={addTask} />
-      <TodoList tasks={tasks} onToggleTask={toggleTask} onDeleteTask={deleteTask} />
-    </div>
+    <VStack>
+      <HStack gap={50} align="end" justify="end" w="100%" maxW="1200px" mx="auto">
+        <TodoForm onAddTask={addTask} />
+        <TodoSearch onSearchTask={setSearch} searchValue={search} />
+      </HStack>
+      <TodoList tasks={filteredTasks} onToggleTask={toggleTask} onDeleteTask={deleteTask} />
+    </VStack>
   );
 };
 
