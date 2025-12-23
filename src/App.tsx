@@ -24,7 +24,7 @@ const App = () => {
 
   const filteredTasks = tasks.filter(task => {
     return task.text.toLowerCase().includes(debouncedSearch);
-  }); // zm
+  });
 
   const addTask = (text: string) => {
     const newTask: Task = {
@@ -32,13 +32,18 @@ const App = () => {
       text: text,
       completed: false,
     };
-    setTasks(prev => [...prev, newTask]); // zm
+    setTasks(prev => [...prev, newTask]);
   };
 
   const toggleTask = (id: number) => {
-    setTasks(prev =>
-      prev.map(task => (task.id === id ? { ...task, completed: !task.completed } : task))
-    ); // zm
+    setTasks(prev => {
+      return prev.map(task => {
+        if (task.id === id) {
+          return { ...task, completed: !task.completed };
+        }
+        return task;
+      });
+    });
   };
 
   const deleteTask = (id: number) => {
